@@ -1,63 +1,62 @@
- Input: s = "aaabbbcc"
-Output: 2
-Explanation: You can delete two 'b's resulting in the good string "aaabcc".
-Another way it to delete one 'b' and one 'c' resulting in the good string "aaabbc".
+Example 1:
+Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
+Output: [[2,4],[1,3],[2,4],[1,3]]
+Explanation: There are 4 nodes in the graph.
+1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
 
-int minDeletions(string s) {
-        
-         vector <int> freq(26,0);
-        
-         for (char c: s){
-             
-             freq[c-'a']++;
-         }
-        
-         /*working code priority_queue <int> pq;
-        
-         for (int i=0; i< 26; i++){
-             
-              if (freq[i] > 0){
-                  
-                  pq.push(freq[i]);
-              }
-         }
-        
-         int mindel=0;
-        
-          while (pq.size() > 1){
-              
-               int topele= pq.top();
-               pq.pop();
-              
-               if (topele == pq.top()){
-                   
-                   if (topele-1 > 0){
-                       
-                       pq.push(topele-1);
-                   }
-                   
-                   mindel++;
-               }
-          }
-        
-        return mindel;*/
-        
-        unordered_set <int> us;
-        
-        int mindel=0;
-        
-         for (int i=0; i< 26; i++){
-             
-             
-              while (freq[i] and us.find(freq[i]) != us.end()){
-                  
-                   freq[i]--;
-                   mindel++;
-              }
-             
-             us.insert(freq[i]);
-         }
-        
-        return mindel;
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
     }
-    
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+class Solution {
+public:
+     void dfs (Node* node, Node* copynode, vector <Node*> &vis){
+         
+          vis[copynode->val]= copynode;
+         
+          for (auto x: node-> neighbors){
+              
+               if (vis[x->val] == nullptr){
+                   
+                    Node* newnode= new Node (x->val);
+                    copynode->neighbors.push_back (newnode);
+                    dfs (x, newnode, vis);
+               }
+              
+              else 
+      copynode->neighbors.push_back (vis[x->val]);  
+          }
+     }
+    Node* cloneGraph(Node* node) {
+     
+        if (node == nullptr) return nullptr;
+        
+        vector <Node*> vis(1000, nullptr);
+        
+        Node* copynode= new Node (node->val); 
+        
+        dfs (node, copynode, vis);
+        return copynode;
+   }
+};
+         
+            
